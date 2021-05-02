@@ -1,0 +1,69 @@
+
+service: unacastcrawler
+frameworkVersion: '2'
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    allowCache: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            -  "sqs:*"
+            - "dynamodb:*"
+            - "lambda:CreateFunction"
+            - "lambda:ListFunctions"
+            - "lambda:ListEventSourceMappings"
+            - "lambda:CreateEventSourceMapping"
+            - "lambda:DeleteEventSourceMapping"
+            - "lambda:GetFunctionConfiguration"
+            - "lambda:DeleteFunction"
+          Resource: "*"                                
+functions:
+  links:
+    handler: handler.handle
+    events:
+      - httpApi:
+          path: /links
+          method: post
+      - httpApi:
+          path: /content/{identifierId}
+          method: get      
+  crawler:
+    handler: crawler.process
+    timeout: 30
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+                - crawlerQueue
+                - Arn
+          batchSize: 10
+          maximumBatchingWindow: 60
+resources:
+  Resources:
+    crawlerTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: crawlerTable
+        AttributeDefinitions:
+          - AttributeName: messageId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: messageId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+    crawlerQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "crawlerQueue"
