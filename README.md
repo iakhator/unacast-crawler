@@ -32,4 +32,5 @@ check [AWS Credential Guide](https://www.serverless.com/framework/docs/providers
   - Navigate to AWS check that lamda, api-gateway, SQS and dynamoDb are created using the `serverless.yml`. Configure it to your choice.
 There is one more thing that need to be done before using the endpoints.
 - Navigate to the Simple Service Queue(SQS) services on AWS , open the Queue created then copy the arn `arn:aws:sqs:us-east-1:1123353635:Queue_Name
+- Replace the `queueURL variable value` with the copide sqs arn. NB: do this before testing the api.
 - Now you can start using the endpoints to schedule the url for crawling and also getting the results.
