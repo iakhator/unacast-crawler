@@ -2,7 +2,7 @@
 
 ## Introduction
 
-**Unacast Crawler**  is a web crawler for crawling web page using url.
+**Unacast Crawler**  is a web crawler for crawling web page using url that leverage on serverless, express, AWS cloud functions, simple message queue and dynamodb.
 
 ## Setup
 
