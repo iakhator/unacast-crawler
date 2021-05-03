@@ -20,7 +20,7 @@ function extractListingsFromHTML (html) {
 	});
 	return {
 		title:  $('title').text(),
-		date: new Date().toJSON().slice(0,10).replace(/-/g,'/'),
+		date: new Date().toISOString(),
 		content: $.html()
 	}
 }
